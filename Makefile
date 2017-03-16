@@ -6,7 +6,7 @@
 #    By: pvan-erp <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/03/14 21:06:46 by pvan-erp          #+#    #+#              #
-#    Updated: 2017/03/14 21:06:51 by pvan-erp         ###   ########.fr        #
+#    Updated: 2017/03/16 00:00:05 by pvan-erp         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ CFLAGS = -Wall -Wextra -Werror
 LIBDIR = -L./libft -L./minilibx_macos
 LIBS = -lft -lmlx -framework OpenGL -framework AppKit
 
-.PHONY: all clean fclean re test asan
+.PHONY: all clean fclean re
 
 
 all: $(NAME)
@@ -35,19 +35,12 @@ minilibx_macos/libmlx.a:
 
 clean:
 	rm -f $(OBJ)
+	make -C libft/ clean
+	make -C minilibx_macos/ clean
 
 fclean: clean
 	rm -f $(NAME)
 	make -C libft/ fclean
-	make -C minilibx_macos/ clean
 
 re: fclean all
 
-
-test: $(SRC) libft/libft.a minilibx_macos/libmlx.a
-	$(CC) alloc-wrap.c $(SRC) $(CFLAGS) $(LIBDIR) $(LIBS)
-	./a.out "1 0"
-
-asan: $(SRC) libft/libft.a minilibx_macos/libmlx.a
-	$(CC) $(SRC) $(CFLAGS) $(LIBDIR) $(LIBS) -fsanitize=address
-	./a.out ./test_maps/10-2.fdf

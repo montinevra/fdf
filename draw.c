@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   draw.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pvan-erp <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/03/15 20:55:42 by pvan-erp          #+#    #+#             */
+/*   Updated: 2017/03/15 22:10:44 by pvan-erp         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
 /*
 **	clr is short for "color", not "clear" or anything else
 */
 
-static int		get_clr(int clr_a, int clr_b, int dist, int i)
+static int	get_clr(int clr_a, int clr_b, int dist, int i)
 {
 	int clr;
 	int r;
@@ -23,39 +35,41 @@ static int		get_clr(int clr_a, int clr_b, int dist, int i)
 	return (clr);
 }
 
-static void		draw_line(t_mlx mlx, t_coords pt_a, t_coords pt_b,
-		int clr_a, int clr_b)
+static void	draw_line(t_mlx mlx, t_px px_a, t_px px_b)
 {
 	int	dist;
 	int	i;
 	int	x;
 	int	y;
+	int	clr;
 
-	dist = (size_t)fmax(abs((int)pt_a.x - (int)pt_b.x), abs((int)pt_a.y - (int)pt_b.y));
+	dist = fmax(abs(px_a.x - px_b.x), abs(px_a.y - px_b.y));
 	i = 0;
 	while (i <= abs(dist))
 	{
-		x = (int)pt_b.x + ((int)pt_a.x - (int)pt_b.x) * i / dist;
-		y = (int)pt_b.y + ((int)pt_a.y - (int)pt_b.y) * i / dist;
-		mlx_pixel_put(mlx.id, mlx.win, x ,y, get_clr(clr_a, clr_b, dist, i));
+		x = px_b.x + (px_a.x - px_b.x) * i / dist;
+		y = px_b.y + (px_a.y - px_b.y) * i / dist;
+		clr = get_clr(px_a.clr, px_b.clr, dist, i);
+		mlx_pixel_put(mlx.id, mlx.win, x, y, clr);
 		i++;
 	}
 }
 
-static t_coords	coords_from_pt(t_mlx mlx, size_t i, size_t j)
+static t_px	px_from_pt(t_mlx mlx, size_t i, size_t j)
 {
-	t_coords	pt;
+	t_px	px;
 
-	pt.x = mlx.offset.x + i * mlx.scale + j * mlx.scale;
-	pt.y = mlx.offset.y + mlx.winsize.y / 2 + j * mlx.scale / 2
-			- i * mlx.scale / 2 - mlx.ptarr.pts[j][i].height * mlx.hscale;
-	return (pt);
+	px.x = mlx.offset.x + i * mlx.scale + j * mlx.scale;
+	px.y = mlx.offset.y + j * mlx.scale / 2 - i * mlx.scale / 2
+			- mlx.ptarr.pts[j][i].height * mlx.hscale;
+	px.clr = mlx.ptarr.pts[j][i].color;
+	return (px);
 }
 
-void	draw(t_mlx mlx)
+void		draw(t_mlx mlx)
 {
-	t_coords	pt;
-	t_coords	pt2;
+	t_px		px;
+	t_px		px2;
 	t_coords	i;
 
 	i.y = ~0;
@@ -64,16 +78,16 @@ void	draw(t_mlx mlx)
 		i.x = mlx.ptarr.x;
 		while ((int)--i.x >= 0)
 		{
-			pt = coords_from_pt(mlx, i.x, i.y);
+			px = px_from_pt(mlx, i.x, i.y);
 			if (i.x < mlx.ptarr.x - 1)
 			{
-				pt2 = coords_from_pt(mlx, i.x + 1, i.y);
-				draw_line(mlx, pt, pt2, mlx.ptarr.pts[i.y][i.x].color, mlx.ptarr.pts[i.y][i.x + 1].color);
+				px2 = px_from_pt(mlx, i.x + 1, i.y);
+				draw_line(mlx, px, px2);
 			}
 			if (i.y > 0)
 			{
-				pt2 = coords_from_pt(mlx, i.x, i.y - 1);
-				draw_line(mlx, pt, pt2, mlx.ptarr.pts[i.y][i.x].color, mlx.ptarr.pts[i.y - 1][i.x].color);
+				px2 = px_from_pt(mlx, i.x, i.y - 1);
+				draw_line(mlx, px, px2);
 			}
 		}
 	}

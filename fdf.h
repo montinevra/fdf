@@ -1,15 +1,34 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fdf.h                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pvan-erp <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/03/15 21:49:21 by pvan-erp          #+#    #+#             */
+/*   Updated: 2017/03/15 23:52:53 by pvan-erp         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FDF_H
 # define FDF_H
 # include <unistd.h>
 # include <math.h>
+# include <stdio.h>
 # include "minilibx_macos/mlx.h"
 # include "libft/libft.h"
-#include <stdio.h>													///debug
+
+typedef struct	s_px
+{
+	int	x;
+	int	y;
+	int	clr;
+}				t_px;
 
 typedef struct	s_pt
 {
 	int	height;
-	unsigned int	color;
+	int	color;
 }				t_pt;
 
 typedef	struct	s_ptarr
@@ -36,9 +55,9 @@ typedef	struct	s_mlx
 	int			hscale;
 }				t_mlx;
 
-void		fdf(t_ptarr ptarr);
-t_ptarr		pts_from_file(const char *file);
-void		mlx_driver(t_mlx mlx);
-void		draw(t_mlx);
+void			fdf(t_ptarr ptarr);
+t_ptarr			pts_from_file(const char *file);
+void			mlx_driver(t_mlx mlx);
+void			draw(t_mlx mlx);
 
 #endif

@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pvan-erp <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/03/15 21:54:23 by pvan-erp          #+#    #+#             */
+/*   Updated: 2017/03/15 22:11:01 by pvan-erp         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
-int main(int argc, char const *argv[])
+int	main(int argc, char const **argv)
 {
 	t_ptarr	ptarr;
 
@@ -14,38 +26,7 @@ int main(int argc, char const *argv[])
 	else
 	{
 		ptarr = pts_from_file(argv[1]);
-		// printf("%d\n", ptarr.pts[2][6].height);			//debug
-		// ft_arrdel((void **)ptarr.pts);
-		// free(ptarr.pts);
 		fdf(ptarr);
 	}
 	return (0);
 }
-
-/*		
-**		size_t i , j;											//debug
-**		i = 0;													//debug
-**		while (i < ptarr.y)										//debug
-**		{														//debug
-**			j = 0;												//debug
-**			while (j < ptarr.x)									//debug
-**			{													//debug
-**				printf("%8d ", ptarr.pts[i][j].height);			//debug
-**				j++;											//debug
-**			}													//debug
-**			printf("\n");										//debug
-**			i++;												//debug
-		}														//debug
-		i = 0;													//debug
-		while (i < ptarr.y)										//debug
-		{														//debug
-			j = 0;												//debug
-			while (j < ptarr.x)									//debug
-			{													//debug
-				printf("%8d ", ptarr.pts[i][j].color);			//debug
-				j++;											//debug
-			}													//debug
-			printf("\n");										//debug
-			i++;												//debug
-		}														//debug
-*/

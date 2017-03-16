@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   points_from_file.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pvan-erp <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/03/15 23:14:53 by pvan-erp          #+#    #+#             */
+/*   Updated: 2017/03/15 23:52:26 by pvan-erp         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
-static void			del(void *content, size_t size)
+static void		del(void *content, size_t size)
 {
 	size_t	i;
 
@@ -13,7 +25,7 @@ static void			del(void *content, size_t size)
 	free(content);
 }
 
-static size_t		get_width(t_list *row)
+static size_t	get_width(t_list *row)
 {
 	size_t	x;
 	t_list	*first;
@@ -36,43 +48,34 @@ static size_t		get_width(t_list *row)
 
 static t_ptarr	pts_from_list(t_list *row)
 {
-	t_ptarr	ptarr;
-	size_t	i;
-	size_t	j;
-	char	*cntptr;
+	t_ptarr		ptarr;
+	t_coords	i;
+	char		*cntptr;
 
 	ptarr.x = get_width(row);
 	ptarr.y = ft_lstlen(row);
 	ptarr.pts = (t_pt **)ft_arrnew(ptarr.y);
-	i = 0;
-	while (i < ptarr.y)
-	{
-		ptarr.pts[i] = (t_pt *)ft_memalloc(sizeof(t_pt) * (ptarr.x + 1));
-		i++;
-	}
-	j = ptarr.y - 1;
+	i.y = ptarr.y - 1;
 	while (row)
 	{
-		i = 0;
-		while (i < ptarr.x)
+		ptarr.pts[i.y] = (t_pt *)ft_memalloc(sizeof(t_pt) * (ptarr.x + 1));
+		i.x = ~0;
+		while (++i.x < ptarr.x)
 		{
-			cntptr = *((char **)row->content + i);
-			ptarr.pts[j][i].height = ft_atoi(cntptr);
+			cntptr = *((char **)row->content + i.x);
+			ptarr.pts[i.y][i.x].height = ft_atoi(cntptr);
+			ptarr.pts[i.y][i.x].color = 0xFFFFFF;
 			if ((cntptr = ft_strstr(cntptr, ",0x")))
-				ptarr.pts[j][i].color = ft_atoi_base(cntptr + 3, 16);
-			else 
-				ptarr.pts[j][i].color = 0xFFFFFF;
-			i++;
+				ptarr.pts[i.y][i.x].color = ft_atoi_base(cntptr + 3, 16);
 		}
 		ft_arrdel(row->content);
-		// printf("freed row\n");
 		row = row->next;
-		j--;
+		i.y--;
 	}
 	return (ptarr);
 }
 
-static t_list		*list_from_file(int fd)
+static t_list	*list_from_file(int fd)
 {
 	char	**line;
 	t_list	*row;
@@ -101,9 +104,7 @@ t_ptarr			pts_from_file(const char *file)
 
 	if ((fd = open(file, O_RDONLY)) < 0)
 	{
-		write(2, "No file ", 8);
-		write(2, file, ft_strlen(file));
-		write(2, "\n", 1);
+		perror(file);
 		exit(1);
 	}
 	row = list_from_file(fd);
